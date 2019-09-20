@@ -1,0 +1,100 @@
+package test;
+
+import java.awt.Desktop.Action;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
+import org.testng.annotations.BeforeMethod;
+
+public class Common_Methods {
+
+	static WebDriver driver;
+	static Actions ref;
+	private TimeUnit TimeUnits;
+
+	
+	public void Browser_lanch()
+	{
+		// TODO Auto-generated method stub
+
+		System.setProperty("webdriver.chrome.driver", ".//drivers/chromedriver.exe");
+		driver =new ChromeDriver();
+		//driver.get("http://qaclickacademy.com/practice.php");
+		driver.get("http://localhost:3000");
+		driver.manage().window().maximize();
+	}
+	public WebElement locators(String Name, String value)
+	{
+		WebElement ele=null;
+		switch(Name)
+		{
+		case"id":
+			ele=driver.findElement(By.id(value));
+			break;
+		case"name":
+			ele=driver.findElement(By.name(value));
+			break;
+		case"className":
+			ele=driver.findElement(By.className(value));
+			break;
+		case"tagName":
+			ele=driver.findElement(By.tagName(value));
+			break;
+		case"linkText":
+			ele=driver.findElement(By.linkText(value));
+			break;
+		case"partialLinkText":
+			ele=driver.findElement(By.partialLinkText(value));
+			break;
+		case"xpath":
+			ele=driver.findElement(By.xpath(value));
+			
+			break;
+		case"cssSelector":
+			ele=driver.findElement(By.cssSelector(value));
+			//ele=(WebElement) driver.findElements(By.xpath(value));
+			break;
+		default :
+			ele=(WebElement) driver.findElements(By.xpath(value));
+		}
+		return ele;
+	}
+	public void type(WebElement ele,String value)
+	{
+		ele.sendKeys(value);
+	}
+	public void click(WebElement ele)
+	{
+		ele.click();
+	}
+	public void getText(WebElement ele)
+	{
+		ele.getText();
+	}
+	public void action(WebElement ele)
+	{
+		ref=new Actions(driver);
+	ref.moveToElement(ele).click().perform();
+	}
+	public void close()
+	{
+	driver.close();
+	}
+	public void webdriverwait()
+	{
+		driver.manage().timeouts().implicitlyWait(10, TimeUnits);
+	}
+	public void print(String value)
+	{
+		System.out.println(value);
+	}
+	public void printv(int value)
+	{
+		System.out.println(value);
+	}
+	}
