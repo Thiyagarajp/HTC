@@ -1,0 +1,87 @@
+public static void main(String[] args) {
+		String str="THiyaguP@1610";
+		int upper=0,lower=0,special=0,number=0;
+		for (int i=0;i<str.length();i++)
+		{
+			char ch=str.charAt(i);
+			if(ch>='A' && ch<='Z')
+				upper++;
+			else if(ch>='a' && ch<='z')
+				lower++;
+			else if(ch>='0' && ch<='9')
+				number++;
+			else
+				special++;
+			
+		}
+		System.out.println("Upper case count is:"+upper);
+		System.out.println("Lower case count is:"+lower);
+		System.out.println("number count is:"+number);
+		System.out.println("special character count is:"+special);
+		
+		}
+	
+public static void main(String[] args) {
+		String str = "Thiyagarajan";
+        String revStr = "";
+
+        for(int i=0; i<=str.length()-1;i++){
+            if(revStr.indexOf(str.charAt(i))==-1){
+                revStr = str.charAt(i)+revStr;
+            }
+        }
+        System.out.println(revStr);
+		}
+	
+public static void main(String[] args){
+		ArrayList<String>  aList=new ArrayList<String> ();
+		    Map<Integer, String> aMap = new HashMap<Integer, String>();
+		    aList.add("Apple");
+		    aList.add("Banana");
+		    aList.add("Cat");
+		    aList.add("Dog");
+		    
+		    for (int i = 0; i < aList.size(); i++) {
+		      aMap.put(i + 1, (String) aList.get(i));
+		    }
+		    
+		    System.out.println(aMap.toString());
+		  }
+	
+
+
+public static void main(String[] args) throws IOException {
+		 char m;
+	        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+	        System.out.print("Enter any alphabet:");
+	        m = (char) bf.read();
+	        if(m >= 'A' && m <= 'Z')
+	        {
+	            System.out.println("Upper Case");
+	        }
+	        else if(m >= 'a' && m <= 'z')
+	        {
+	            System.out.println("Lower Case");
+	        }
+	        else if(m >= '0' && m <= '9')
+	        {
+	            System.out.println("Digit");
+	        }
+	        else
+	        	System.out.println("Special Character");
+		}
+	
+
+	public static void main(String[] args) throws IOException {
+		 char m;
+	        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+	        System.out.print("Enter any alphabet:");
+	        m = (char) bf.read();
+	        if(m >= 'A' && m <= 'Z')
+	        {
+	            System.out.println("Upper Case");
+	        }
+	        else if(m >= 'a' && m <= 'z')
+	        {
+	            System.out.println("Lower Case");
+	        }	
