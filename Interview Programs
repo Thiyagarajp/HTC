@@ -85,3 +85,54 @@ public static void main(String[] args) throws IOException {
 	        {
 	            System.out.println("Lower Case");
 	        }	
+//Verify the total links and child links
+//**************************************
+package test;
+
+import java.util.Iterator;
+import java.util.Set;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.annotations.Test;
+
+public class CheckLinks {
+
+	@Test
+	public  void main() throws InterruptedException {
+		// TODO Auto-generated method stub
+		System.setProperty("webdriver.chrome.driver", ".//drivers/chromedriver.exe");
+		WebDriver driver =new ChromeDriver();
+		driver.get("http://qaclickacademy.com/practice.php");
+		driver.manage().window().maximize();
+		System.out.println(driver.findElements(By.tagName("a")).size());
+		
+		WebElement fdriver = driver.findElement(By.cssSelector("#gf-BIG"));
+		System.out.println(fdriver.findElements(By.tagName("a")).size());
+		
+		WebElement sdriver = fdriver.findElement(By.xpath("//table/tbody/tr[1]/td[1]/ul"));
+		System.out.println(sdriver.findElements(By.tagName("a")).size());
+		
+		int size = sdriver.findElements(By.tagName("a")).size();
+		
+		for(int i=1;i<size;i++)
+		{
+			String clicklink = Keys.chord(Keys.CONTROL,Keys.ENTER);
+			sdriver.findElements(By.tagName("a")).get(i).sendKeys(clicklink);
+		}
+		
+		Set<String> xy = driver.getWindowHandles();
+		Iterator<String> it = xy.iterator();
+		while(it.hasNext())
+		{
+			System.out.println(driver.switchTo().window(it.next()).getTitle());
+	}
+	
+}
+}
+
+
+
