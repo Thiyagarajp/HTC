@@ -1,68 +1,97 @@
 package test;
 
-import java.awt.Desktop.Action;
+
+import java.io.IOException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.compress.archivers.dump.InvalidFormatException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
-import org.testng.annotations.BeforeMethod;
+
+import org.openqa.selenium.support.PageFactory;
+import org.testng.annotations.DataProvider;
 
 public class Common_Methods {
 
 	static WebDriver driver;
 	static Actions ref;
 	private TimeUnit TimeUnits;
+	String excelFileName;
+	public void PageFactoryDemoClass(WebDriver driver){
+		this.driver = driver;
 
-	
-	public void Browser_lanch()
-	{
-		// TODO Auto-generated method stub
-
-		System.setProperty("webdriver.chrome.driver", ".//drivers/chromedriver.exe");
-		driver =new ChromeDriver();
-		//driver.get("http://qaclickacademy.com/practice.php");
-		driver.get("http://localhost:3000");
-		driver.manage().window().maximize();
+		//initializing all the web elements located by @FindBy
+		PageFactory.initElements(driver, this);
 	}
-	public WebElement locators(String Name, String value)
-	{
-		WebElement ele=null;
-		switch(Name)
-		{
-		case"id":
-			ele=driver.findElement(By.id(value));
-			break;
-		case"name":
-			ele=driver.findElement(By.name(value));
-			break;
-		case"className":
-			ele=driver.findElement(By.className(value));
-			break;
-		case"tagName":
-			ele=driver.findElement(By.tagName(value));
-			break;
-		case"linkText":
-			ele=driver.findElement(By.linkText(value));
-			break;
-		case"partialLinkText":
-			ele=driver.findElement(By.partialLinkText(value));
-			break;
-		case"xpath":
-			ele=driver.findElement(By.xpath(value));
-			
-			break;
-		case"cssSelector":
-			ele=driver.findElement(By.cssSelector(value));
-			//ele=(WebElement) driver.findElements(By.xpath(value));
-			break;
-		default :
-			ele=(WebElement) driver.findElements(By.xpath(value));
+	public void startApp_Browser(String browser, String url) {
+		try {
+			if(browser.equalsIgnoreCase("chrome")) {
+				System.setProperty("webdriver.chrome.driver", ".//drivers/chromedriver.exe");
+				driver =new ChromeDriver();
+			} 
+			/*else if(browser.equalsIgnoreCase("firefox")) {
+				System.setProperty("webdriver.gecko.driver",
+						"./drivers/geckodriver.exe");
+				driver = new FirefoxDriver();
+			} else if(browser.equalsIgnoreCase("ie")) {
+				System.setProperty("webdriver.ie.driver",
+						"./drivers/IEDriverServer.exe");
+				driver = new InternetExplorerDriver();
+			}*/
+			driver.navigate().to(url);
+			driver.manage().window().maximize();
+			driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		} catch (Exception e) {
+			System.err.println("The Browser Could not be Launched. Hence Failed");
+			throw new RuntimeException();
+		} finally {
+
 		}
-		return ele;
+	}
+	public WebElement locateElement(String type, String value)
+	{
+		try
+		{
+			switch(type.toLowerCase())
+			{
+			case"id":return driver.findElement(By.id(value));
+			case"name":return driver.findElement(By.name(value));
+			case"class":return driver.findElement(By.className(value));
+			case"tname":return driver.findElement(By.tagName(value));
+			case"link":return driver.findElement(By.linkText(value));
+			case"plink":return driver.findElement(By.partialLinkText(value));
+			case"xpath":return driver.findElement(By.xpath(value));
+			case"css":return driver.findElement(By.cssSelector(value));
+
+			}
+
+		} catch (NoSuchElementException e) {
+			System.err.println("The Element with locator:"+type+" Not Found with value: "+value);
+			throw new RuntimeException();
+		}
+		return null;
+	}
+
+	public List<WebElement> locateElements(String type, String value) {
+		try {
+			switch(type.toLowerCase()) {
+			case "id": return driver.findElements(By.id(value));
+			case "name": return driver.findElements(By.name(value));
+			case "class": return driver.findElements(By.className(value));
+			case "link": return driver.findElements(By.linkText(value));
+			case "xpath": return driver.findElements(By.xpath(value));
+			case "css": return driver.findElements(By.cssSelector(value));
+			}
+		} catch (NoSuchElementException e) {
+			System.err.println("The Element with locator:"+type+" Not Found with value: "+value);
+			throw new RuntimeException();
+		}
+		return null;
 	}
 	public void type(WebElement ele,String value)
 	{
@@ -79,11 +108,11 @@ public class Common_Methods {
 	public void action(WebElement ele)
 	{
 		ref=new Actions(driver);
-	ref.moveToElement(ele).click().perform();
+		ref.moveToElement(ele).click().perform();
 	}
 	public void close()
 	{
-	driver.close();
+		driver.close();
 	}
 	public void webdriverwait()
 	{
@@ -97,4 +126,24 @@ public class Common_Methods {
 	{
 		System.out.println(value);
 	}
+	public void switchToFrame(int index) {
+		driver.switchTo().frame(index);
+
 	}
+
+	public void switchToFrame(WebElement ele) {
+		driver.switchTo().frame(ele);
+	}
+
+	public void switchToFrame(String idOrName) {
+		driver.switchTo().frame(idOrName);
+	}
+	public void defaultContent() {
+		driver.switchTo().defaultContent();
+	}
+
+	@DataProvider(name="fetchData")
+	public String[][] getData() throws InvalidFormatException, IOException{
+		return DataDriverTestdemo.readExcel(excelFileName);
+	}
+}
