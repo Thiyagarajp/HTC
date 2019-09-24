@@ -1,0 +1,88 @@
+package test;
+
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.List;
+
+import org.openqa.selenium.WebElement;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
+import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.ResultSet;
+import com.mysql.jdbc.Statement;
+
+public class TeamLeadLogin extends Common_Methods {
+	@BeforeTest
+	public void setData() {
+		excelFileName  = "TeamLead";
+	}
+	//Data Provide get the datas from the excel sheet.
+	@Test(dataProvider="fetchData")
+	public  void TeamLeadAssignPacktoPackager(String userName,String password) throws ClassNotFoundException, SQLException, InterruptedException {
+		//Object of Connections. It is used to connection mysql server DB.
+		Connection conn = null;
+
+		// Object of Statement. It is used to create a Statement to execute the query
+		Statement stmt = null;
+
+		//Object of ResultSet => 'It maintains a cursor that points to the current row in the result set'
+		ResultSet rs = null;
+		Class.forName("com.mysql.jdbc.Driver");
+		// Open a connection
+		conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/wps", "root", "123Welcome");
+		// Execute a query
+		stmt = (Statement) conn.createStatement();
+		rs = (ResultSet) stmt.executeQuery("SELECT * FROM wps.wps_pkg_queue where status_sk=2;");//("select * from wps_users where EMAIL In ('PKG.ramesh@test.local';");//,'bu@test.local');");'pkg.mani@test.local',
+		while(rs.next())
+		{
+			startApp_Browser("chrome","http://localhost:3000");
+
+			//userName(rs.getString());
+			type(locateElement("css","#Email"), userName);
+			type(locateElement("css","#Password"),password);
+			click(locateElement("xpath","//input[@value='LOGIN']"));
+			//get the All packages count
+			List<WebElement> AllCounts = locateElements("xpath","//div[@class='cardContent']/p[@class='cardCount']");
+			int s = AllCounts.size();
+			//allpack.click();
+			for(int i=0;i<s;i++)
+			{
+				WebElement ele = locateElements("xpath","//div[@class='cardContent']/p[@class='cardCount']").get(i);
+				String count = ele.getText();
+				ele.click();
+				int result = Integer.parseInt(count);	
+				//printv(result);
+				//Verify the Table count Rows
+				List<WebElement> allpacklist = locateElements("xpath","//table[@id='adminTable']//tbody/tr");
+				int size = allpacklist.size();
+				if(size==result)
+				{
+					print("Count is matched: "+size +" = "+result);
+				}
+			}
+			String a=rs.getString("STATUS_SK");
+			if(a.equals("2"))
+			{
+				click(locateElement("xpath","//p[contains(text(),'SUBMITTED')]"));
+				locateElement("xpath","//tr[7]//img[@src='images/ViewPackage.png']").click();
+			}
+			Thread.sleep(2000);
+			WebElement eles=locateElement("xpath","//div[@class='filter-option']");
+			action1(eles);
+			WebElement eles1=locateElement("xpath","(//ul[@class='dropdown-menu inner show']/li/a/span)[2]");
+			action(eles1);
+			Thread.sleep(2000);
+			WebElement eles2=locateElement("xpath","//button[@name='Next']");
+			action(eles2);
+			Thread.sleep(2000);
+			WebElement element = locateElement("xpath","//div[@class='Logo']/a/img");
+			action(element);
+			WebElement Elemlog = locateElement("xpath","//input[@src='/images/Logout.png']");
+			action(Elemlog);
+			close();
+			break;
+		}
+	}
+}
+
