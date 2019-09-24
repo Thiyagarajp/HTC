@@ -1,0 +1,118 @@
+package test;
+
+import static org.testng.Assert.assertTrue;
+
+import org.openqa.selenium.WebElement;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
+public class CreatePackagewithEmptyValues extends Common_Methods {
+	@BeforeTest
+	public void setData() {
+		excelFileName  = "createpack";
+	}
+	//Data Provide get the datas from the excel sheet.
+	@Test(dataProvider="fetchData")
+	public void CreatePackEmptyData(String userName, String password) throws InterruptedException
+	{
+		startApp_Browser("chrome","http://localhost:3000");
+		//userName(rs.getString());
+		type(locateElement("css","#Email"),userName);
+		//type(locators(),userName);
+		type(locateElement("css","#Password"),password);
+		click(locateElement("xpath","//input[@value='LOGIN']"));
+
+		click(locateElement("xpath","//button[@class='btn btn-secondary']"));
+		Thread.sleep(2000);
+		WebElement submit = locateElement("xpath","//button[@name='Submit']");
+		action(submit);
+		assertTrue(action(submit));
+		{
+			try
+			{
+
+				String a=locateElement("id","PackageName").getText();
+				if(a.isEmpty())
+				{
+					WebElement packName=locateElement("xpath","//span[@id='PackageName-error']");
+					String pn = packName.getText();
+					System.out.println(pn);
+				}
+			}
+			catch(Exception e)
+			{
+			}
+			try
+			{
+				String a=locateElement("id","SourceFileCheckSum").getText();
+				if(a.isEmpty())
+				{
+					WebElement packName=locateElement("id","SourceFileCheckSum-error");
+					String pn = packName.getText();
+					System.out.println(pn);
+				}
+			}
+			catch(Exception e)
+			{
+			}
+		}
+		try
+		{
+
+			String a=locateElement("id","FolderName").getText();
+			if(a.isEmpty())
+			{
+				WebElement packName=locateElement("id","FolderName-error");
+				String pn = packName.getText();
+				System.out.println(pn);
+			}
+		}
+		catch(Exception e)
+		{
+		}
+		try
+		{
+
+			String a=locateElement("id","FileName").getText();
+			if(a.isEmpty())
+			{
+				WebElement packName=locateElement("id","FileName-error");
+				String pn = packName.getText();
+				System.out.println(pn);
+			}
+		}
+		catch(Exception e)
+		{
+		}
+		try
+		{
+
+			String a=locateElement("id","PreRequiredSWDetails").getText();
+			if(a.isEmpty())
+			{
+				WebElement packName=locateElement("id","PreRequiredSWDetails-error");
+				String pn = packName.getText();
+				System.out.println(pn);
+			}
+		}
+		catch(Exception e)
+		{
+		}
+		try
+		{
+
+			String a=locateElement("id","TestProcedure").getText();
+			if(a.isEmpty())
+			{
+				WebElement packName=locateElement("id","TestProcedure-error");
+				String pn = packName.getText();
+				System.out.println(pn);
+			}
+		}
+		catch(Exception e)
+		{
+		}
+
+		close();
+	}
+}
