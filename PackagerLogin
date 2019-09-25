@@ -1,0 +1,92 @@
+package test;
+
+import java.util.List;
+
+import org.openqa.selenium.WebElement;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
+public class PackagerLogin extends Common_Methods {
+	@BeforeTest
+	public void setData() {
+		excelFileName  = "Packager";
+	}
+	//Data Provide get the datas from the excel sheet.
+	@Test(dataProvider="fetchData")
+	public void CreatePackEmptyData(String userName, String password, String packagerComment,String checkSum, String QAComment) throws InterruptedException
+	{
+		startApp_Browser("chrome","http://localhost:3000");
+		//userName(rs.getString());
+		type(locateElement("css","#Email"),userName);
+		//type(locators(),userName);
+		type(locateElement("css","#Password"),password);
+		click(locateElement("xpath","//input[@value='LOGIN']"));
+		List<WebElement> AllCounts = locateElements("xpath","//div[@class='cardContent']/p[@class='cardCount']");
+		int s = AllCounts.size();
+		//allpack.click();
+		for(int i=0;i<s;i++)
+		{
+			WebElement ele = locateElements("xpath","//div[@class='cardContent']/p[@class='cardCount']").get(i);
+			String count = ele.getText();
+			ele.click();
+			int result = Integer.parseInt(count);	
+			//printv(result);
+			//Verify the Table count Rows
+			List<WebElement> allpacklist = locateElements("xpath","//table[@id='adminTable']//tbody/tr");
+			int size = allpacklist.size();
+			if(size==result)
+			{
+				print("Count is matched: "+size +" = "+result);
+			}
+		}
+		String dev = getText(locateElement("id","PACKAGES_IN_DEV"));
+		int count = getText1(dev);
+		System.out.println(count);
+		if(count>0)
+		{
+			click(locateElement("xpath","//p[contains(text(),'IN DEV')]"));
+			locateElement("xpath","//tr//img[@src='images/ViewPackage.png']").click();
+			sleep();
+			WebElement eles=locateElement("xpath","//div[@class='filter-option']");
+			action1(eles);
+			WebElement eles1=locateElement("xpath","(//ul[@class='dropdown-menu inner show']/li/a/span)[2]");
+			action(eles1);sleep();
+		//	clear(locateElement("id","PackagerComments"));
+			type(locateElement("id","PackagerComments"),packagerComment);
+		//	clear(locateElement("id","PackagedFileCheckSum"));
+			type(locateElement("id","PackagedFileCheckSum"),checkSum);
+
+			WebElement eles2=locateElement("xpath","//button[@name='Next']");
+			action(eles2);sleep();
+			/*WebElement element = locateElement("xpath","//div[@class='Logo']/a/img");
+			action(element);
+			WebElement Elemlog = locateElement("xpath","//input[@src='/images/Logout.png']");
+			action(Elemlog);*/
+		}
+		sleep();
+		click(locateElement("xpath","//span[@class='slider round']"));
+		String QA = getText(locateElement("id","PACKAGES_IN_QA"));
+		int count1 = getText1(QA);
+		System.out.println(count1);
+		if(count1>0)
+		{
+			
+			//click(locateElement("xpath","//p[contains(text(),'IN QA')]"));
+			locateElement("xpath","//tr//img[@src='images/ViewPackage.png']").click();
+			//clear(locateElement("id","QAComments"));
+			type(locateElement("id","QAComments"),QAComment);
+			click(locateElement("xpath","//button[@name='Prev']"));
+			WebElement element = locateElement("xpath","//div[@class='Logo']/a/img");
+			action(element);
+			WebElement Elemlog = locateElement("xpath","//input[@src='/images/Logout.png']");
+			action(Elemlog);
+		}
+		else
+		{
+			close();
+		}
+		
+		
+
+	}
+}
