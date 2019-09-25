@@ -1,0 +1,77 @@
+package test;
+
+
+import java.util.Iterator;
+import java.util.Set;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
+
+import org.testng.annotations.Test;
+
+public class CheckLinks extends Common_Methods {
+
+	@Test
+	public  void main() throws InterruptedException {
+		// TODO Auto-generated method stub
+		/*System.setProperty("webdriver.chrome.driver", ".//drivers/chromedriver.exe");
+		WebDriver driver =new ChromeDriver();*/
+		startApp_Browser("chrome","http://qaclickacademy.com/practice.php");
+
+		driver.manage().window().maximize();
+		System.out.println(driver.findElements(By.tagName("a")).size());
+
+		verifyEnabled(locateElement("id","autocomplete"));
+		verifySelected(locateElement("id","checkBoxOption1"));	
+		
+		WebElement fdriver = driver.findElement(By.cssSelector("#gf-BIG"));
+		System.out.println(fdriver.findElements(By.tagName("a")).size());
+		click(locateElement("id","dropdown-class-example"));
+		click(locateElement("xpath","//option[contains(text(),'Option2')]"));
+		//selectDropDownUsingText(locateElement("xpath","//option[contains(text(),'Option2')]"),"Option2");
+		click(locateElement("id","alertbtn"));
+		//acceptAlert();
+		sleep();
+		dismissAlert();
+		//getAlertText();
+		//typeAlert("THis is test alerts");
+		verifyEnabled(locateElement("xpath","//input[@id='name']"));
+		if(true)
+		{
+			click(locateElement("xpath","//input[@id='name']"));
+			type(locateElement("xpath","//input[@id='name']"),"This is My Test Alerts");
+			click(locateElement("id","alertbtn"));
+		}
+		acceptAlert();
+		click(locateElement("xpath","//button[@id='openwindow']"));
+		switchToWindow("QA Click");
+	//	selectDropDownUsingText(locateElement("xpath","//option[contains(text(),'Option2')]"),"Option2");
+
+		WebElement sdriver = fdriver.findElement(By.xpath("//table/tbody/tr[1]/td[1]/ul"));
+		System.out.println(sdriver.findElements(By.tagName("a")).size());
+
+		int size = sdriver.findElements(By.tagName("a")).size();
+
+		for(int i=1;i<size;i++)
+		{
+			String clicklink = Keys.chord(Keys.CONTROL,Keys.ENTER);
+			sdriver.findElements(By.tagName("a")).get(i).sendKeys(clicklink);
+		}
+
+		Set<String> xy = driver.getWindowHandles();
+		Iterator<String> it = xy.iterator();
+		while(it.hasNext())
+		{
+			System.out.println(driver.switchTo().window(it.next()).getTitle());
+		}
+		//close();
+		driver.switchTo().window("Practice Page");
+		getText(locateElement("xpath","//table[@id='product']//tr[6]//td[2]"));
+	}
+
+	
+}
+
+
+
