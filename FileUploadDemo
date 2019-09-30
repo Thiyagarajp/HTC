@@ -1,0 +1,50 @@
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
+public class TakeScreenshot extends Common_Methods{
+	@BeforeTest
+	public void setData() {
+		excelFileName  = "createpack";
+	}
+
+	@Test(dataProvider="fetchData")
+	public void createPack(String userName, String password) throws InterruptedException, AWTException
+	{
+		startApp_Browser("chrome","http://localhost:3000");
+
+		type(locateElement("css","#Email"),userName);
+		type(locateElement("css","#Password"),password);
+		click(locateElement("xpath","//input[@value='LOGIN']"));
+		sleep();
+		mouseOver(locateElement("xpath","//div[@class='settingIcon']/img"));
+		click(locateElement("xpath","//a[text()='My Profile']"));
+		sleep();
+		click(locateElement("xpath","//img[@class='card-edit-icon editButton']"));
+		 Robot robot = new Robot();
+		 Thread.sleep(1000);
+		/*  // Press Enter
+		 robot.keyPress(KeyEvent.VK_ENTER); 
+		 
+		 // Using single forward slash. Doble slash is not working Exe:-C:\Users\Thiyagarajan.p\Downloads\home.jpg
+		  * 
+		 // Release Enter
+		 robot.keyRelease(KeyEvent.VK_ENTER);*/
+		 // Press CTRL+V
+		
+		 robot.keyPress(KeyEvent.VK_CONTROL);
+		 robot.keyPress(KeyEvent.VK_V);
+		 
+		// Release CTRL+V
+		 robot.keyRelease(KeyEvent.VK_CONTROL);	
+		 robot.keyRelease(KeyEvent.VK_V);
+		 Thread.sleep(1000);
+		        
+		 //Press Enter 
+		 robot.keyPress(KeyEvent.VK_ENTER);
+		 //Release Enter 
+		 robot.keyRelease(KeyEvent.VK_ENTER);
+	}
+}
