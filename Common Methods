@@ -1,6 +1,7 @@
 package test;
 
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,26 +14,46 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchWindowException;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.DataProvider;
+
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 
 public class Common_Methods {
 
+	ExtentHtmlReporter htmlReporter; 
+	ExtentReports report; 
+	ExtentTest logger;
 	WebDriver driver;
 	static Actions ref;
 	private TimeUnit TimeUnits;
 	String excelFileName;
+	String reportName;
+	WebDriverWait wait;
+	int i=1;
+
 
 	public void startApp_Browser(String browser, String url) {
 		try {
 			if(browser.equalsIgnoreCase("chrome")) {
 				System.setProperty("webdriver.chrome.driver", ".//drivers/chromedriver.exe");
 				driver =new ChromeDriver();
+				driver.manage().window().maximize();
+				System.out.println(driver.findElements(By.tagName("a")).size());
 			} 
 			/*else if(browser.equalsIgnoreCase("firefox")) {
 				System.setProperty("webdriver.gecko.driver",
@@ -90,6 +111,19 @@ public class Common_Methods {
 		}
 		return null;
 	}
+	public void ExtendReports()
+	{
+
+		htmlReporter = new ExtentHtmlReporter("D:\\SudentChatBot\\Reports\\SSS.html");
+		report = new ExtentReports();
+		report.attachReporter(htmlReporter);
+		logger = report.createTest("CheckURLStatus");
+		logger.log(Status.INFO, "Starting Browser instance...");
+		report.flush();
+
+	}
+	
+
 	public void type(WebElement ele,String value)
 	{
 		ele.clear();
@@ -141,9 +175,16 @@ public class Common_Methods {
 		ref=new Actions(driver);
 		ref.moveToElement(ele).click().perform();
 	}
+
+	public void mouseOver(WebElement ele)
+	{
+		ref = new Actions(driver);
+		ref.moveToElement(ele).build().perform();
+	}
 	public void close()
 	{
 		driver.close();
+		driver.quit();
 	}
 	public void webdriverwait()
 	{
@@ -153,9 +194,23 @@ public class Common_Methods {
 	{
 		Thread.sleep(2000);
 	}
+	public void webdriverwait(WebElement ele) {
+		try {
+			wait = new WebDriverWait(driver, 10);
+			wait.until(ExpectedConditions.elementToBeClickable(ele));
+			ele.click();
+			//logStep("The Element "+ele+" clicked", "pass"); 
+		} catch (StaleElementReferenceException e) {
+			//logStep("The Element "+ele+" could not be clicked", "fail");
+			throw new RuntimeException();
+		} finally { 
+
+		}
+	}
 	public void print(String value)
 	{
 		System.out.println(value);
+
 	}
 	public void printv(int value)
 	{
@@ -252,7 +307,7 @@ public class Common_Methods {
 
 	public void typeAlert(String data) {
 		driver.switchTo().alert().sendKeys(data);
-
+		takeSnap();
 	}
 	public void switchToWindow(int index) {
 		try {
@@ -286,5 +341,16 @@ public class Common_Methods {
 		} finally {
 
 		}
+	}
+	public void takeSnap() {
+		try {
+			TakesScreenshot ts=(TakesScreenshot)driver;
+			File src=ts.getScreenshotAs(OutputType.FILE);
+			File des  = new File(".//snap/"+i+".png");
+			FileHandler.copy(src,des);
+		} catch (IOException e) {
+			System.err.println("The SnapShot could not be taken");
+		}
+		i++;
 	}
 }
