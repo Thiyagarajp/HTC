@@ -1,0 +1,103 @@
+package test;
+
+import java.util.List;
+
+
+import org.openqa.selenium.WebElement;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
+
+public class VerifyPackagecounts extends Common_Methods {
+	//Pass the Excel file name
+	ExtentHtmlReporter htmlReporter; 
+	ExtentReports report; 
+	ExtentTest logger;
+	@BeforeTest
+	public void setData() {
+		excelFileName  = "createpack";
+	}
+	/*//Data Provide get the datas from the excel sheet.
+	public VerifyPackagecounts(WebDriver driver) {
+       this.driver =driver;
+       PageFactory.initElements(driver, this);
+    }
+	 @FindBy(how = How.NAME, using = "Email")
+	 public WebElement username;
+	 @FindBy(how = How.NAME, using = "Password") 
+	 public WebElement Password;
+	 @FindBy(how = How.XPATH, using = "//input[@class='btn btn-primary']") 
+	 public WebElement login;*/
+	@Test(dataProvider="fetchData")
+	public void createPack(String userName, String password) throws InterruptedException
+	{
+		startApp_Browser("chrome","http://localhost:3000");
+		htmlReporter = new ExtentHtmlReporter("D:\\SudentChatBot\\Reports\\SSS.html");
+		report = new ExtentReports();
+		report.attachReporter(htmlReporter);
+		logger = report.createTest("CheckURLStatus");
+		/*logger.log(Status.INFO, "Starting Browser instance...");
+		logger.log(Status.INFO, "Opening Google now...");
+		logger.log(Status.PASS, "Google opens successfully!");*/
+		
+		 
+		/*username.sendKeys(userName);
+		Password.sendKeys(password);
+		login.click();*/
+		//return driver.getTitle();
+	//userName(rs.getString());
+		logger.log(Status.INFO, "Entered user name: "+userName);
+	type(locateElement("css","#Email"),userName);
+	logger.log(Status.INFO, "Entered password is: "+password);
+	type(locateElement("css","#Password"),password);
+	logger.log(Status.INFO, "Click on login button");
+	click(locateElement("xpath","//input[@value='LOGIN']"));
+	
+	//get the All packages count
+	
+	List<WebElement> AllCounts = locateElements("xpath","//div[@class='cardContent']/p[@class='cardCount']");
+	int s = AllCounts.size();
+	//allpack.click();
+	for(int i=0;i<s;i++)
+	{
+		WebElement ele = locateElements("xpath","//div[@class='cardContent']/p[@class='cardCount']").get(i);
+		String count = ele.getText();
+		logger.log(Status.INFO, "Verify packages count: "+count);
+		ele.click();
+		int result = Integer.parseInt(count);	
+		//printv(result);
+		//Verify the Table count Rows
+		List<WebElement> allpacklist = locateElements("xpath","//table[@id='adminTable']//tbody/tr");
+		int size = allpacklist.size();
+		if(size==result)
+		{
+			print("Count is matched: "+size +" = "+result);
+		}
+	}
+	logger.log(Status.INFO, "Click on View icon: ");
+		locateElement("xpath","//img[@src='images/ViewPackage.png']").click();
+	
+	String status = locateElement("xpath","//p/span").getText();
+	//print(status);
+	if(status.equals("COMPLETED"))
+	{
+		logger.log(Status.INFO, "Verify the Status is: ");
+		print("This package has been completed");
+	}
+	takeSnap();
+	/*WebElement element = locateElement("xpath","//div[@class='Logo']/a/img");
+	action(element);*/
+	logger.log(Status.INFO, "Click on Home Icon: ");
+	WebElement element = locateElement("xpath","//button[@class='btn btn-secondary']");
+	action(element);
+	takeSnap();
+	report.flush();
+	WebElement Elemlog = locateElement("xpath","//input[@src='/images/Logout.png']");
+	action(Elemlog);
+	close();
+}
+}
