@@ -1,0 +1,29 @@
+package test;
+
+import org.testng.annotations.Test;
+
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
+
+public class ExtentReportsEx extends Common_Methods {
+	ExtentHtmlReporter htmlReporter; 
+	ExtentReports report; 
+	ExtentTest logger;
+	@Test
+	public void reports()
+	{
+		startApp_Browser("chrome","https://www.google.com/");
+		ExtendReports();
+		logger = report.createTest("CheckURLStatus");
+		logger.log(Status.INFO, "Starting Browser instance...");
+		logger.log(Status.INFO, "Opening Google now...");
+		logger.log(Status.PASS, "Google opens successfully!");
+		report.flush();
+		
+	}
+}
+
+//Download jars from:: Extendreports.com/coummunity URL
+//add : 1st and fully from lib files
