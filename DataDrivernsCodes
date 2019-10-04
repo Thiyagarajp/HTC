@@ -1,9 +1,84 @@
-public class DataDriverTestdemo {
+public class Common_Method {
+
+	
+	WebDriver driver;
+	static Actions ref;
+	private TimeUnit TimeUnits;
+	String excelFileName;
+	
+	public void startApp_Browser(String browser, String url) {
 		
+			
+		if(browser.equalsIgnoreCase("chrome")) {
+			System.setProperty("webdriver.chrome.driver", ".//drivers/chromedriver.exe");
+			driver =new ChromeDriver();
+			driver.manage().window().maximize();
+			System.out.println(driver.findElements(By.tagName("a")).size());
+		} 
+		driver.navigate().to(url);
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+	}
+			
+	public WebElement locateElement(String type, String value)
+	{
+		try
+		{
+			switch(type.toLowerCase())
+			{
+			case"id":return driver.findElement(By.id(value));
+			case"name":return driver.findElement(By.name(value));
+			case"class":return driver.findElement(By.className(value));
+			case"tname":return driver.findElement(By.tagName(value));
+			case"link":return driver.findElement(By.linkText(value));
+			case"plink":return driver.findElement(By.partialLinkText(value));
+			case"xpath":return driver.findElement(By.xpath(value));
+			case"css":return driver.findElement(By.cssSelector(value));
+			}
+		} catch (NoSuchElementException e) {
+			System.err.println("The Element with locator:"+type+" Not Found with value: "+value);
+			throw new RuntimeException();
+		}
+		return null;
+	}
+	
+	public void click(WebElement ele)
+	{
+		ele.click();
+	}
+	public void mouseOver(WebElement ele)
+	{
+		ref = new Actions(driver);
+		ref.moveToElement(ele).click().build().perform();
+	}
+	public void close()
+	{
+		driver.close();
+		driver.quit();
+	}
+	public void webdriverwait()
+	{
+		driver.manage().timeouts().implicitlyWait(10, TimeUnits);
+	}
+	public void sleep() throws InterruptedException
+	{
+		Thread.sleep(2000);
+	}
+	
+
+	@DataProvider(name="fetchData")
+	public String[][] getData() throws InvalidFormatException, IOException{
+		return DataDriverTestdemo.readExcel(excelFileName);
+	}
+
+	
+}
+
+public class DataDriverTestdemo {
 	public static String[][] readExcel(String fileName) throws IOException 
 	{
 		
-	XSSFWorkbook workbook=new XSSFWorkbook ("./data/"+fileName+".xlsx");
+	XSSFWorkbook workbook=new XSSFWorkbook (".//data/"+fileName+".xlsx");
 	XSSFSheet sheet = workbook.getSheetAt(0);
 	int rowCount =sheet.getLastRowNum();
 	System.out.println("Row count "+ rowCount);
@@ -24,16 +99,24 @@ public class DataDriverTestdemo {
 	workbook.close();
 		return data;
 	}
+}
 
-String excelFileName;
-@DataProvider(name="fetchData")
-	public String[][] getData() throws InvalidFormatException, IOException{
-		return DataDriverTestdemo.readExcel(excelFileName);
-	}
-	
+public class Udemylogin extends Common_Method {
 	@BeforeTest
 	public void setData() {
-		excelFileName  = "createpack1";
+		excelFileName  = "udemylogin";
 	}
 	//Data Provide get the datas from the excel sheet.
 	@Test(dataProvider="fetchData")
+	public void login(String userName,String Password)
+	{
+		startApp_Browser("chrome","https://easyupload.io/");
+		mouseOver(locateElement("xpath","//span[text()='Login / Register']"));
+		click(locateElement("xpath","//div[@class='submenu']/a"));
+	//driver.findElement(By.xpath("//button[text()='Log In']")).click();
+	driver.findElement(By.id("mail")).sendKeys(userName);
+	driver.findElement(By.id("password")).sendKeys(Password);
+	driver.findElement(By.name("login")).click();
+		
+	}
+}
