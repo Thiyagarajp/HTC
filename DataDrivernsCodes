@@ -1,0 +1,39 @@
+public class DataDriverTestdemo {
+		
+	public static String[][] readExcel(String fileName) throws IOException 
+	{
+		
+	XSSFWorkbook workbook=new XSSFWorkbook ("./data/"+fileName+".xlsx");
+	XSSFSheet sheet = workbook.getSheetAt(0);
+	int rowCount =sheet.getLastRowNum();
+	System.out.println("Row count "+ rowCount);
+	int cellCount =sheet.getRow(0).getLastCellNum();
+	System.out.println("Column Count "+ cellCount);
+	String [][] data =new String [rowCount][cellCount];
+
+	for(int i=1;i<=rowCount;i++)
+	{
+		XSSFRow row=sheet.getRow(i);
+
+		for(int j=0;j<cellCount;j++)
+		{
+		XSSFCell cell =row.getCell(j);
+			data[i-1][j] = cell.getStringCellValue();
+		}
+	}
+	workbook.close();
+		return data;
+	}
+
+String excelFileName;
+@DataProvider(name="fetchData")
+	public String[][] getData() throws InvalidFormatException, IOException{
+		return DataDriverTestdemo.readExcel(excelFileName);
+	}
+	
+	@BeforeTest
+	public void setData() {
+		excelFileName  = "createpack1";
+	}
+	//Data Provide get the datas from the excel sheet.
+	@Test(dataProvider="fetchData")
