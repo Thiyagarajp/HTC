@@ -40,3 +40,129 @@ exports.config = {
  
  
 };
+Each and all methods: outside functions:
+***************************************
+describe('Protractor Element Demo',function() {  
+function Add(a,b)
+{
+element(by.model("first")).sendKeys(a);
+element(by.model("second")).sendKeys(b);
+
+element(by.id("gobutton")).click();
+
+}
+
+it('Locators',function() {
+
+/*browser.waitForAngularEnabled(false);
+browser.get("http://google.com");//non angular apps*/
+browser.get('http://juliemr.github.io/protractor-demo/');
+//posse.com
+//upwork.com
+
+Add(2,3);
+Add(4,3);
+Add(8,3);
+Add(2,3);
+Add(9,3);
+Add(0,3);
+
+element.all(by.repeater("result in memory")).each(function(item)
+{
+item.element(by.css("td:nth-child(3)")).getText().then(function(text)
+{
+
+console.log(text);
+})
+})
+})
+})
+
+Dropdown list code:
+*******************
+describe('Protractor Element Demo',function() {  
+function Calc(a,b,c)
+{
+element(by.model("first")).sendKeys(a);
+element(by.model("second")).sendKeys(b);
+//
+element.all(by.tagName("option")).each(function(item)
+{
+item.getAttribute("value").then(function(values)
+{
+if(values==c)
+{
+item.click();
+}
+})
+})
+element(by.id("gobutton")).click();
+}
+it('Locators',function() {
+/*browser.waitForAngularEnabled(false);
+browser.get("http://google.com");//non angular apps*/
+browser.get('http://juliemr.github.io/protractor-demo/');
+Calc(3,5,"MULTIPLICATION");
+Calc(3,5,"DIVISION");
+Calc(3,5,"DIVISION");
+Calc(10,6,"ADDITION");
+element.all(by.repeater("result in memory")).each(function(item)
+{
+item.element(by.css("td:nth-child(3)")).getText().then(function(text)
+{
+console.log(text);
+})
+})
+})
+})
+
+Actions & Window Handles:
+*************************
+
+describe('Actions demo',function() {  
+
+
+it('Open Posse website',function() {
+//moving the mouse into that textbox
+//sendkeys
+//keyboard arrow
+//Keyboard enter
+browser.get("https://posse.com/");
+element(by.model("userInputQuery")).sendKeys("river");
+browser.actions().mouseMove(element(by.model("locationQuery")).sendKeys("london")).perform();
+
+browser.actions().sendKeys(protractor.Key.ARROW_DOWN).perform();
+browser.actions().sendKeys(protractor.Key.ENTER).perform().then(function()
+{
+
+browser.sleep(2000);
+
+expect(element.all(by.css("div[ng-mouseover*='onSearchResultOver']")).count()).toEqual(7);
+
+element.all(by.css("div[ng-mouseover*='onSearchResultOver']")).get(0).click();
+element(by.css("a[ng-href*='London/River Island']")).click().then(function()
+{
+browser.sleep(2000);
+})
+})
+
+})
+})
+
+Alerts:
+*************
+describe('Protractor Alert steps',function() {  
+
+
+it('Open NonAngular js website Alerts',function() {
+
+browser.waitForAngularEnabled(false);
+browser.get("http://qaclickacademy.com/practice.php");
+element(by.id("confirmbtn")).click();
+
+browser.switchTo().alert().dismiss().then(function()
+
+{
+//10sec
+browser.sleep(5000);
+})
